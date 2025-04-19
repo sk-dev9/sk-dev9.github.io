@@ -12,18 +12,20 @@ df = pd.read_csv(csv_file)
 # === Keep only specific columns ===
 df = df[columns_to_include]
 
-# === Format date columns to 'YY-MM-DD' ===
+# === Format date columns to 'YYYY-MM-DD' ===
 date_columns = ['Created-TimeStamp']
 for col in date_columns:
     if col in df.columns:
         df[col] = pd.to_datetime(df[col], errors='coerce').dt.strftime('%Y-%m-%d')
 
+
 # Convert Job URL to clickable links
 if 'Job URL' in df.columns:
-    df['Job URL'] = df['Job URL'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>' if pd.notna(x) else '')
+    df['Job URL'] = df['Job URL'].apply(lambda x: f'<a href="{x}">{x}</a>' if pd.notna(x) and x != '' else '')
 
-# === Convert to HTML table ===
-html_table = df.to_html(index=False, classes="display", table_id="jobTable")
+# === Convert to HTML table (with escape=False to allow HTML rendering) ===
+html_table = df.to_html(index=False, classes="display", table_id="jobTable", escape=False)
+
 
 # === Full HTML with DataTables + Filters ===
 html_output = f"""
