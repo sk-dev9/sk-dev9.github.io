@@ -7,5 +7,6 @@ df = pd.read_csv('job_list.csv')
 html_table = df.to_html(index=False)
 
 # Save the HTML to a file
-with open("index.html", "w") as file:
+with open("output.html", "w", encoding="utf-8") as file:
     file.write(html_table)
+
