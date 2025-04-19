@@ -4,7 +4,7 @@ from datetime import datetime
 # === Configuration ===
 csv_file = "job_list.csv"
 html_file = "index.html"
-columns_to_include = ['Company', 'Title', 'Location', 'Created-TimeStamp']
+columns_to_include = ['Company', 'Title', 'Location', 'Job URL', 'Created-TimeStamp']
 
 # === Load and filter CSV ===
 df = pd.read_csv(csv_file)
@@ -16,7 +16,11 @@ df = df[columns_to_include]
 date_columns = ['Created-TimeStamp']
 for col in date_columns:
     if col in df.columns:
-        df[col] = pd.to_datetime(df[col], errors='coerce').dt.strftime('%d-%m-%Y')
+        df[col] = pd.to_datetime(df[col], errors='coerce').dt.strftime('%Y-%m-%d')
+
+# Convert Job URL to clickable links
+if 'Job URL' in df.columns:
+    df['Job URL'] = df['Job URL'].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>' if pd.notna(x) else '')
 
 # === Convert to HTML table ===
 html_table = df.to_html(index=False, classes="display", table_id="jobTable")
